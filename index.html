@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Minesweeper App</title>
+	<link rel="stylesheet" async="" href="">
+	<style>
+		:root {
+			background-color: rgb(170, 170, 170);
+		}
+		.maindiv {
+			margin: 1rem auto;
+			display: flex;
+			text-align: center;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+		h1 {
+			background-color: grey;
+			width: max-content;
+			padding: 0.5rem 1.5rem;
+			border-radius: 0.25rem;
+			margin: 0.5rem;
+		}
+		.board {
+			background-color: rgb(77, 77, 77);
+			display: grid;
+			width: max-content;
+			padding: 0.15rem;
+			border-radius: 0.3rem;
+			grid-template-columns: repeat(8, auto);
+		}
+		.tile {
+			width: auto;
+			padding: 0.15rem;
+		}
+		.tilebtn {
+			padding: 0.75rem 0.5rem;
+			width: 3rem;
+			height: 2.75rem;
+			display: flex;
+			justify-content: center;
+		}
+		img {
+			width: 100%;
+			align-self: center;
+		}
+	</style>
+	<script async="true" src="app.js"></script>
+</head>
+<body>
+	<div class="maindiv">
+		<h1>Minesweeper</h1>
+		<div class="board" id="gameboard">
+			<!-- <div class="tile"><button class="tilebtn">Tile</button></div> -->
+		</div>
+	</div>
+</body>
+</html>
