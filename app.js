@@ -1,12 +1,14 @@
 var board = document.getElementById("gameboard");
 var alertdiv = document.createElement("div");
 alertdiv.classList.add("alertdiv");
-var flags = 15;
+alertdiv.hidden = true;
+document.getElementById("maindiv").append(alertdiv);
+var flags = 2;
+var mines_set = new Set();
 
 window.addEventListener("load", (event) => {
 	var div, b;
 	var mines = 0, id = 0;
-	var mines_set = new Set();
 	for(let i = 0; i < 8; i++) {
 		for(let j = 0; j < 8; j++) {
 			div = document.createElement("div");
@@ -23,18 +25,8 @@ window.addEventListener("load", (event) => {
 				if(e.button != 0) return 1;
 				if(mines_set.has(e.currentTarget)) {
 					alertdiv.innerText = "Game Over. You hit a mine.";
-					mines_set.forEach((elem) => {
-						elem.setAttribute("game-is-searched", "1");
-						if(elem.children.length > 0) {
-							if(elem.firstChild.getAttribute("src") !== "flag.png") return 1;
-							elem.firstChild.src = "flagged-mine.png";
-						} else {
-							elem.innerText = "";
-							var img = document.createElement("img");
-							img.src = "mine.svg";
-							elem.append(img);
-						}
-					});
+					alertdiv.hidden = false;
+					game_over();
 					return 1;
 				}
 				if(e.currentTarget.innerText !== "Tile") return 1;
@@ -48,6 +40,7 @@ window.addEventListener("load", (event) => {
 					if(e.currentTarget.firstChild.getAttribute("src") !== "flag.png") return 1;
 					e.currentTarget.firstChild.remove();
 					e.currentTarget.innerText = "Tile";
+					flags++;
 				} else {
 					if(e.currentTarget.innerText !== "Tile") return 1;
 					if(flags == 0) {
@@ -58,12 +51,18 @@ window.addEventListener("load", (event) => {
 					var img = document.createElement("img");
 					img.src = "flag.png";
 					e.currentTarget.append(img);
+					flags--;
+					if(is_game_over()) {
+						alertdiv.innerText = "You successfully flagged all the mines.";
+						alertdiv.hidden = false;
+						game_over();
+					}
 				}
 				return false;
 			});
 		}
 	}
-	while(mines != 15) {
+	while(mines != 2) {
 		id = Math.floor(Math.random() * 64);
 		if(mines_set.has(board.children[id].firstChild))
 			continue;
@@ -72,6 +71,7 @@ window.addEventListener("load", (event) => {
 		addNearbyMinesCount(board.children[id].firstChild);
 		mines++;
 	}
+	console.log(mines_set);
 });
 
 function addNearbyMinesCount(mine_elem) {
@@ -113,4 +113,29 @@ function addNearbyMinesCount(mine_elem) {
 
 function getElement(r, c) {
 	return board.querySelector("button[game-tile-row=\""+r+"\"][game-tile-col=\""+c.toString()+"\"]");
+}
+
+function game_over() {
+	mines_set.forEach((elem) => {
+		elem.setAttribute("game-is-searched", "1");
+		if(elem.children.length > 0) {
+			if(elem.firstChild.getAttribute("src") !== "flag.png") return 1;
+			elem.firstChild.src = "flagged-mine.png";
+		} else {
+			elem.innerText = "";
+			var img = document.createElement("img");
+			img.src = "mine.svg";
+			elem.append(img);
+		}
+	});
+	return 1;
+}
+
+function is_game_over() {
+	var unflagged_mines = 0;
+	mines_set.forEach((elem) => {
+		if(elem.children.length < 1)
+			unflagged_mines++;
+	});
+	return (unflagged_mines == 0);
 }
